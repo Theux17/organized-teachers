@@ -1,3 +1,5 @@
+const { hash } = require('bcryptjs')
+
 const Teacher = require('../models/Teacher')
 
 module.exports = class TeacherController {
@@ -16,7 +18,7 @@ module.exports = class TeacherController {
 
     async post(req, res) {
         try {
-            const {
+            let {
                 name,
                 email,
                 password
@@ -26,13 +28,17 @@ module.exports = class TeacherController {
                 error: "Preencha os campos que faltam."
             })
 
+            password = await hash(password, 8)
+
             const teacherId = await Teacher.create({
                 name,
                 email,
                 password
             })
 
-            return res.status(201).redirect(`/teachers/show/${teacherId}`)
+            req.session.teacherId = teacherId
+
+            return res.status(201).redirect(`/teachers/profile/${teacherId}`)
 
         } catch (error) {
             return res.status(400).json({
@@ -46,7 +52,11 @@ module.exports = class TeacherController {
 
             const teacher = await Teacher.findOne({ where: { id: req.params.id } })
 
-            return res.json({ teacher })
+            return res.json({ 
+                name: teacher.name,
+                email: teacher.email 
+            })
+
         } catch (error) {
             return res.status(400).json({
                 error: "Erro inesperado aconteceu"
@@ -57,12 +67,6 @@ module.exports = class TeacherController {
     async put(req, res) {
         try {
             const id = req.params.id
-
-            const teacher = await Teacher.findOne({ where: { id } })
-
-            if (req.body.password != teacher.password) return res.json({
-                error: "Senha incorreta"
-            })
 
             await Teacher.update(id, {
                 name: req.body.name,
@@ -83,10 +87,11 @@ module.exports = class TeacherController {
     async delete(req, res) {
         try {
             await Teacher.delete(req.params.id)
+            req.session.destroy()
 
-            const teachers = await Teacher.findAll()
-
-            return res.status(200).json({ teachers })
+            return res.status(200).json({ 
+                message: `Usuário de id ${req.params.id} deletado com sucesso`
+             })
 
         } catch (error) {
             return res.status(400).json({
