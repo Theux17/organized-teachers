@@ -24,10 +24,6 @@ module.exports = class TeacherController {
                 password
             } = req.body
 
-            if (name == "" || email == "" || password == "") return res.json({
-                error: "Preencha os campos que faltam."
-            })
-
             password = await hash(password, 8)
 
             const teacherId = await Teacher.create({

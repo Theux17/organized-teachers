@@ -2,9 +2,23 @@ const { compare } = require('bcryptjs')
 
 const Teacher = require('../models/Teacher')
 
+function checksIfFieldsIsEmpty(body, res){
+    const keys = Object.keys(body)
+
+    for(key of keys){
+        if(body[key] == "") return res.status(400).json({
+            message: "Preecha todos os campos"
+        })
+    }
+}
+
+
 module.exports = class TeacherValidador {
     async teacher(req, res, next) {
         try {
+            const fillAllFields = checksIfFieldsIsEmpty(req.body, res)
+            if(fillAllFields) return fillAllFields
+
             const { email } = req.body
 
             const teachers = await Teacher.findAll()
@@ -50,6 +64,9 @@ module.exports = class TeacherValidador {
     }
     async create(req, res, next) {
         try {
+            const fillAllFields = checksIfFieldsIsEmpty(req.body, res)
+            if(fillAllFields) return fillAllFields
+
             if (req.session.teacherId) return res.status(400).json({
                 message: "Você não pode cadastrar um novo usuário nesse momento"
             })
