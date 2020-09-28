@@ -30,7 +30,7 @@ routes.put('/:id', usersLoggedIn, teacherValidator.teacher, teacherController.pu
 routes.delete('/:id', usersLoggedIn, teacherValidator.teacher, teacherController.delete)
 
 // students
-routes.post('/students', usersLoggedIn, studentValidator.student, studentsController.post)
+routes.post('/students', usersLoggedIn, studentValidator.create, studentsController.post)
 routes.get('/students/:id', usersLoggedIn, studentValidator.student, studentsController.show)
 routes.put('/students/:id', usersLoggedIn, studentValidator.student, studentsController.put )
 routes.delete('/students/:id', usersLoggedIn, studentValidator.student, studentsController.delete )

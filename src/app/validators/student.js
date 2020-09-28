@@ -17,13 +17,13 @@ module.exports = class StudentValidator {
             if (fillAllFields) return fillAllFields
 
             // aluno do professor
-            const student = await Student.findOne({ where: { teacher_id: req.session.teacherId } })
-
-            if (!student) return res.status(201).json({
-                error: "Você não tem alunos cadastrado"
+            const student = await Student.findOne({ where: { id: req.params.id } })
+        
+            if(student == undefined) return res.status(201).json({
+                error: "O aluno não existe"
             })
 
-            if (student.id != req.params.id) return res.status(401).json({
+            if (student.teacher_id != req.session.teacherId) return res.status(401).json({
                 error: "Você não é professor desse aluno"
             })
 
@@ -33,5 +33,12 @@ module.exports = class StudentValidator {
                 error: "Erro inesperado aconteceu"
             })
         }
+
+    }
+    create(req, res, next) {
+        const fillAllFields = checksIfFieldsIsEmpty(req.body, res)
+        if (fillAllFields) return fillAllFields
+        
+        next()
     }
 }
