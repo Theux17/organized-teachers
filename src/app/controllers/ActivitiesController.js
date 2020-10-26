@@ -4,7 +4,7 @@ module.exports = class ActivitiesController {
     async index(req, res) {
         try {
 
-            const activities = await Activities.findAll()
+            const activities = await Activitie.findAll()
 
             return res.status(200).json({ activities })
         } catch (error) {
@@ -70,7 +70,7 @@ module.exports = class ActivitiesController {
         try {
             const id = req.params.id
             
-            let students = JSON.stringify(req.body.students)
+            let students = JSON.stringify(req.students)
 
             await Activitie.update(id, {
                 activitie_name: req.body.activitie_name,

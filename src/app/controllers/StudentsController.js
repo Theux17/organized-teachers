@@ -7,22 +7,13 @@ module.exports = class StudentsController {
                 name,
                 school,
                 school_class,
-                activity_note,
-                activity_id,
                 teacher_id
             } = req.body
-
-            activity_note = String(activity_note)
-            activity_note = activity_note.replace(/\D/g, "")
-            activity_note = activity_note.replace(/\,/g, ".")
-            activity_note = Number(activity_note)
 
             const studentId = await Student.create({
                 name,
                 school,
                 school_class,
-                activity_note,
-                activity_id: 1,
                 teacher_id: req.session.teacherId
             })
 
@@ -53,17 +44,11 @@ module.exports = class StudentsController {
     async put(req, res) {
 
         try {
-            let { activity_note } = req.body
-            activity_note = String(activity_note)
-            activity_note = activity_note.replace(/\D/g, "")
-            activity_note = activity_note.replace(/\,/g, ".")
-            activity_note = Number(activity_note)
 
             await Student.update(req.params.id, {
                 name: req.body.name,
                 school: req.body.school,
                 school_class: req.body.school_class,
-                activity_note
             })
 
             return res.status(200).json({
