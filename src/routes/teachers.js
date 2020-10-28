@@ -34,6 +34,7 @@ routes.put('/:id', usersLoggedIn, teacherValidator.teacher, teacherController.pu
 routes.delete('/:id', usersLoggedIn, teacherValidator.teacher, teacherController.delete)
 
 // students
+routes.get('/students', usersLoggedIn, studentsController.index)
 routes.post('/students', usersLoggedIn, studentValidator.create, studentsController.post)
 routes.get('/students/:id', usersLoggedIn, studentValidator.student, studentsController.show)
 routes.put('/students/:id', usersLoggedIn, studentValidator.student, studentsController.put )
