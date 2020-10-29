@@ -3,14 +3,14 @@ const Activitie = require('../models/Activitie')
 module.exports = class ActivitiesController {
     async index(req, res) {
         try {
+            const teacher_id = req.session.teacherId
 
-            const activities = await Activitie.findAll()
+            const activities = await Activitie.findAll({ where: { teacher_id } })
 
-            return res.status(200).json({ activities })
+            return res.status(200).json(activities)
         } catch (error) {
-            console.error(error);
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao listar todas as atividades"
             })
         }
     }
@@ -42,12 +42,13 @@ module.exports = class ActivitiesController {
                 students
             })
 
-            return res.status(201).redirect(`/teachers/activities/${activitieId}`)
+            const activitie = await Activitie.findOne({ where: { id: activitieId } })
+
+            return res.status(201).json(activitie)
 
         } catch (error) {
-            console.error(error)
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao cadastrar uma nova atividade"
             })
         }
     }
@@ -56,12 +57,10 @@ module.exports = class ActivitiesController {
         try {
             const activitie = await Activitie.findOne({ where: { id: req.params.id } })
 
-            return res.status(200).json({
-                activitie
-            })
+            return res.status(200).json({ activitie })
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao mostrar a atividade"
             })
         }
     }
@@ -81,14 +80,13 @@ module.exports = class ActivitiesController {
                 students: students     
             })
 
-            return res.status(200).json({
-                message: "Atualizado com sucesso"
-            })
+            const activitie = await Activitie.findOne({ where: { id } })
+
+            return res.status(200).json( activitie )
 
         } catch (error) {
-            console.error(error)
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao atualizar a atividade"
             })
         }
     }
@@ -103,7 +101,7 @@ module.exports = class ActivitiesController {
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao deletar a atividade"
             })
         }
     }
