@@ -5,13 +5,11 @@ module.exports = class StudentsController {
         try {
             const students = await Student.findAll({ where: { teacher_id: req.session.teacherId } })
 
-            return res.status(200).json({
-                students
-            })
+            return res.status(200).json({ students })
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao listar todos os estudantes"
             })
         }
     }
@@ -31,11 +29,13 @@ module.exports = class StudentsController {
                 teacher_id: req.session.teacherId
             })
 
-            return res.status(200).redirect(`/teachers/students/${studentId}`)
+            const student = await Student.findOne({ where: { id: studentId } })
+
+            return res.status(201).json(student)
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao criar o estudante"
             })
         }
     }
@@ -44,13 +44,11 @@ module.exports = class StudentsController {
         try {
             const teacher = await Student.findOne({ where: { id: req.params.id } })
 
-            return res.status(200).json({
-                teacher
-            })
+            return res.status(200).json({ teacher })
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao mostrar o estudante"
             })
         }
     }
@@ -58,20 +56,21 @@ module.exports = class StudentsController {
     async put(req, res) {
 
         try {
+            const id = req.params.id
 
-            await Student.update(req.params.id, {
+            await Student.update(id, {
                 name: req.body.name,
                 school: req.body.school,
                 school_class: req.body.school_class,
             })
 
-            return res.status(200).json({
-                message: "Atualizado com sucesso."
-            })
+            const student = await Student.findOne({ where: { id } })
+
+            return res.status(200).json({ student })
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao atualizar o estudante"
             })
         }
     }
@@ -85,7 +84,7 @@ module.exports = class StudentsController {
             })
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao deletar o estudante"
             })
         }
     }
