@@ -25,7 +25,7 @@ module.exports = class TeacherController {
 
             const teacher = await Teacher.findOne({ where: { id: teacherId } })
             
-            return res.status(200).json(teacherView.render(teacher))
+            return res.status(201).json(teacherView.render(teacher))
 
         } catch (error) {
             return res.status(400).json({
