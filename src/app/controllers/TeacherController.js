@@ -1,20 +1,9 @@
 const { hash } = require('bcryptjs')
 
 const Teacher = require('../models/Teacher')
+const teacherView = require('../../views/teachers_views')
 
 module.exports = class TeacherController {
-    async index(req, res) {
-        try {
-
-            const teachers = await Teacher.findAll()
-
-            return res.status(200).json({ teachers })
-        } catch (error) {
-            return res.status(400).json({
-                error: "Erro inesperado aconteceu"
-            })
-        }
-    }
 
     async post(req, res) {
         try {
@@ -34,11 +23,13 @@ module.exports = class TeacherController {
 
             req.session.teacherId = teacherId
 
-            return res.status(201).redirect(`/teachers/profile/${teacherId}`)
+            const teacher = await Teacher.findOne({ where: { id: teacherId } })
+            
+            return res.status(200).json(teacherView.render(teacher))
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao criar o professor"
             })
         }
     }
@@ -48,14 +39,11 @@ module.exports = class TeacherController {
 
             const teacher = await Teacher.findOne({ where: { id: req.params.id } })
 
-            return res.json({ 
-                name: teacher.name,
-                email: teacher.email 
-            })
+            return res.status(200).json(teacherView.render(teacher))
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao mostrar o professor"
             })
         }
     }
@@ -69,13 +57,13 @@ module.exports = class TeacherController {
                 email: req.body.email
             })
 
-            return res.status(200).json({
-                message: "Atualizado com sucesso"
-            })
+            const teacher = await Teacher.findOne({ where: { id } })
+
+            return res.status(200).json(teacherView.render(teacher))
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao atualizar o professor"
             })
         }
     }
@@ -83,6 +71,7 @@ module.exports = class TeacherController {
     async delete(req, res) {
         try {
             await Teacher.delete(req.params.id)
+            
             req.session.destroy()
 
             return res.status(200).json({ 
@@ -91,7 +80,7 @@ module.exports = class TeacherController {
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado aconteceu"
+                error: "Erro inesperado ao deletar o professor"
             })
         }
     }
