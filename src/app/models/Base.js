@@ -65,6 +65,16 @@ const Base = {
             console.error(error)
         }
     },
+    async findBy(filter, column ) {
+        let results = await db.query(`
+            SELECT * FROM ${this.table}
+            WHERE unaccent(${this.table}.${column}) ILIKE '%${filter}%' 
+            OR ${this.table}.${column} ILIKE '%${filter}%'
+        `)
+
+        return results.rows
+
+    },
     async update(id, fields) {
         try {
             let update = []

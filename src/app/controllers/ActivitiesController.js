@@ -3,9 +3,19 @@ const Activitie = require('../models/Activitie')
 module.exports = class ActivitiesController {
     async index(req, res) {
         try {
+            const { filter } = req.query
+
             const teacher_id = req.session.teacherId
 
-            const activities = await Activitie.findAll({ where: { teacher_id } })
+            let activities = await Activitie.findAll({where: { teacher_id } })
+
+            if (filter) {
+                activities = await Activitie.findBy(filter, 'activitie_name')
+                activities = activities.filter(activitie => {
+                    if (activitie.teacher_id == teacher_id) return activitie
+                })
+            
+            }
 
             return res.status(200).json(activities)
         } catch (error) {
@@ -68,7 +78,7 @@ module.exports = class ActivitiesController {
     async put(req, res) {
         try {
             const id = req.params.id
-            
+
             let students = JSON.stringify(req.students)
 
             await Activitie.update(id, {
@@ -77,12 +87,12 @@ module.exports = class ActivitiesController {
                 school_class: req.body.school_class,
                 school_subjects: req.body.school_subjects,
                 activity_date: req.body.activity_date,
-                students: students     
+                students: students
             })
 
             const activitie = await Activitie.findOne({ where: { id } })
 
-            return res.status(200).json( activitie )
+            return res.status(200).json(activitie)
 
         } catch (error) {
             return res.status(400).json({
