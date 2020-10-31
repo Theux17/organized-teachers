@@ -3,22 +3,11 @@ const Activitie = require('../models/Activitie')
 module.exports = class ActivitiesController {
     async index(req, res) {
         try {
-            const { filter } = req.query
-
-            const teacher_id = req.session.teacherId
-
-            let activities = await Activitie.findAll({where: { teacher_id } })
-
-            if (filter) {
-                activities = await Activitie.findBy(filter, 'activitie_name')
-                activities = activities.filter(activitie => {
-                    if (activitie.teacher_id == teacher_id) return activitie
-                })
-            
-            }
+            const activities = req.activities
 
             return res.status(200).json(activities)
         } catch (error) {
+            console.error(error)
             return res.status(400).json({
                 error: "Erro inesperado ao listar todas as atividades"
             })

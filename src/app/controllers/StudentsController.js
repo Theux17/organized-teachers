@@ -3,18 +3,7 @@ const Student = require('../models/Student')
 module.exports = class StudentsController {
     async index(req, res) {
         try {
-            const { filter } = req.query
-            const teacher_id = req.session.teacherId
-
-            let students = await Student.findAll({ where: { teacher_id } })
-
-            if (filter) {
-                students = await Student.findBy(filter, 'name')
-                students = students.filter(student => {
-                    if (student.teacher_id == teacher_id) return student
-                })
-            
-            }
+            const students = req.students
 
             return res.status(200).json({ students })
 

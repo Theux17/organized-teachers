@@ -34,14 +34,14 @@ routes.put('/:id', usersLoggedIn, teacherValidator.teacher, teacherController.pu
 routes.delete('/:id', usersLoggedIn, teacherValidator.teacher, teacherController.delete)
 
 // students
-routes.get('/students', usersLoggedIn, studentsController.index)
+routes.get('/students', usersLoggedIn, studentValidator.paginate, studentsController.index)
 routes.post('/students', usersLoggedIn, studentValidator.create, studentsController.post)
 routes.get('/students/:id', usersLoggedIn, studentValidator.student, studentsController.show)
 routes.put('/students/:id', usersLoggedIn, studentValidator.student, studentsController.put )
 routes.delete('/students/:id', usersLoggedIn, studentValidator.student, studentsController.delete )
 
 // activities
-routes.get('/activities', usersLoggedIn, activitiesController.index)
+routes.get('/activities', usersLoggedIn, activitieValidator.paginate, activitiesController.index)
 routes.post('/activities', usersLoggedIn, activitieValidator.create, activitiesController.post)
 routes.get('/activities/:id', usersLoggedIn, activitieValidator.activitie, activitiesController.show)
 routes.put('/activities/:id', usersLoggedIn, activitieValidator.create, activitiesController.put )

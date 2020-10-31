@@ -10,7 +10,7 @@ function find(filters, table) {
                 query += ` ${key} `
 
                 Object.keys(filters[key]).map(field => {
-                    query += `${field} = '${filters[key] [field]}'`
+                    query += `${field} = '${filters[key][field]}'`
                 })
             })
 
@@ -65,15 +65,28 @@ const Base = {
             console.error(error)
         }
     },
-    async findBy(filter, column ) {
-        let results = await db.query(`
-            SELECT * FROM ${this.table}
-            WHERE unaccent(${this.table}.${column}) ILIKE '%${filter}%' 
-            OR ${this.table}.${column} ILIKE '%${filter}%'
-        `)
+    async paginate(params, columnName, teacherId) {
+        const { limit, offset, filter } = params
+
+        let query = `SELECT * FROM ${this.table}`
+
+        if (filter) {
+            query = `${query}
+                WHERE unaccent(${this.table}.${columnName}) ILIKE '%${filter}%' 
+                OR ${this.table}.${columnName} ILIKE '%${filter}%'
+            `
+        }
+        if(!filter) query = `${query} 
+            WHERE ${this.table}.teacher_id = ${teacherId}
+        `
+
+        query = `
+            ${query}         
+            LIMIT $1 OFFSET $2
+        `
+        const results = await db.query(query, [limit, offset])
 
         return results.rows
-
     },
     async update(id, fields) {
         try {
@@ -97,7 +110,7 @@ const Base = {
             console.error(error)
         }
     },
-    async delete(id){
+    async delete(id) {
         return db.query(`DELETE FROM ${this.table} WHERE id = ${id}`)
     }
 

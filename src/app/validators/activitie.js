@@ -61,7 +61,7 @@ module.exports = class TeacherValidador {
                 if (registeredStudent.teacher_id != teacher_id) return res.status(400).json({
                     error: `Você não tem nehum aluno(a) com o nome "${student.name}"`
                 })
-                
+
                 if (registeredStudent.name != student.name) return res.status(400).json({
                     error: `Verifique se o nome do aluno(a) "${student.name}" está correto`
                 })
@@ -73,9 +73,9 @@ module.exports = class TeacherValidador {
                 if (registeredStudent.school_class != school_class) return res.status(400).json({
                     error: `Aluno(a) "${registeredStudent.name}" não pertence a classe ${school_class}, e sim a classe ${registeredStudent.school_class}`
                 })
-                
+
             }
-            
+
             async function getStudent(student) {
                 getTeacherStudent(student)
 
@@ -100,6 +100,41 @@ module.exports = class TeacherValidador {
             return res.status(400).json({
                 error: "Erro inesperado aconteceu"
             })
+        }
+    }
+
+    async paginate(req, res, next) {
+        try {
+
+            let { filter, page, limit } = req.query
+            page = page || 1
+            limit = limit || 8
+            let offset = limit * (page - 1)
+
+            const params = {
+                filter,
+                page,
+                limit,
+                offset
+            }
+            
+            const teacher_id = req.session.teacherId
+            
+            let activities = await Activitie.findAll({where: { teacher_id } })
+            
+            if (filter || page || limit) {
+                activities = await Activitie.paginate(params, 'activitie_name', teacher_id)
+                if(activities.length == 0) return res.status(400).json({ error: "Sem dados para mostrar" })
+                activities = activities.filter(activitie => {
+                    if (activitie.teacher_id == teacher_id) return activitie
+                })                
+            }
+
+            req.activities = activities
+
+            next()
+        } catch (error) {
+            console.error(error)
         }
     }
 }
