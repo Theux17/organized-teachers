@@ -1,6 +1,7 @@
 const Teacher = require('../models/Teacher')
 const { compare } = require('bcryptjs')
 
+
 function checksIfTheChefsFieldsAreEmpty(body, res) {
     const keys = Object.keys(body)
 
@@ -22,13 +23,13 @@ module.exports = class SessionValidator {
 
             const teachers = await Teacher.findAll({where: {email} })
             if(teachers.length == 0) 
-            return res.status(204).json({
+            return res.status(404).json({
                 error: "Professor não cadastrado"
             })
 
             const teacher = await Teacher.findOne({ where: { email } })
 
-            if (email != teacher.email) return res.status(204).json({
+            if (email != teacher.email) return res.status(404).json({
                 error: "Professor não cadastrado"
             })
 
@@ -56,5 +57,38 @@ module.exports = class SessionValidator {
     logout(req, res, next) {
         if (req.session.teacherId)
             next()
+    }
+
+    async forgot(req, res, next) {
+        const { email } = req.body
+
+        const teacher =  await Teacher.findOne({ where: { email } })
+        if(!teacher) return res.status(404).json({ error: "Professor não cadastrado" })
+
+        req.teacher = teacher
+
+        next()
+    }
+
+    async reset(req, res, next){
+        const { email, password, passwordRepeat } = req.body
+        const { token } = req.query
+        
+        const teacher =  await Teacher.findOne({ where: { email } })
+        
+        if(!teacher) return res.status(404).json({ error: "Professor não cadastrado", token })
+
+        if(password !== passwordRepeat) return res.status(404).json({ error: "A senha e a repetição da senha não iguais", token })
+
+        if(token !== teacher.reset_token) return res.status(404).json({ error: "Token inválido! Solicte uma nova recuperação de senha", token })
+
+        let now = new Date
+        now = now.setHours(now.getHours())
+
+        if(now > teacher.reset_token_expires) return res.status(404).json({ error: "Token expirado! Solicte uma nova recuperação de senha ", token })
+
+        req.teacher = teacher
+
+        next()
     }
 }

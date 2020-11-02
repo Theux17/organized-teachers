@@ -27,6 +27,10 @@ const activitieValidator = new ActivitieValidator
 routes.post('/login', sessionValidator.login, sessionController.login )
 routes.post('/logout', usersLoggedIn, sessionValidator.logout, sessionController.logout )
 
+// forgot / reset-password
+routes.post('/forgot-password', sessionValidator.forgot, sessionController.forgot)
+routes.post('/reset-password', sessionValidator.reset, sessionController.reset)
+
 // teachers
 routes.post('', teacherValidator.create, teacherController.post)
 routes.get('/profile/:id', usersLoggedIn, teacherValidator.teacher, teacherController.show)
