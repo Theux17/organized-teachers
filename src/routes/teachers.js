@@ -49,7 +49,7 @@ routes.get('/activities', usersLoggedIn, activitieValidator.paginate, activities
 routes.post('/activities', usersLoggedIn, activitieValidator.create, activitiesController.post)
 routes.get('/activities/:id', usersLoggedIn, activitieValidator.activitie, activitiesController.show)
 routes.put('/activities/:id', usersLoggedIn, activitieValidator.create, activitiesController.put )
-routes.delete('/activities/:id', usersLoggedIn, activitiesController.delete )
+routes.delete('/activities/:id', usersLoggedIn, activitieValidator.activitie, activitiesController.delete )
 
 
 
