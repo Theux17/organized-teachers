@@ -18,14 +18,14 @@ module.exports = class SessionValidator {
 
             const fillAllFields = checksIfTheChefsFieldsAreEmpty(req.body, res)
             if (fillAllFields) return fillAllFields
-            
+
             const { email, password } = req.body
 
-            const teachers = await Teacher.findAll({where: {email} })
-            if(teachers.length == 0) 
-            return res.status(404).json({
-                error: "Professor não cadastrado"
-            })
+            const teachers = await Teacher.findAll({ where: { email } })
+            if (teachers.length == 0)
+                return res.status(404).json({
+                    error: "Professor não cadastrado"
+                })
 
             const teacher = await Teacher.findOne({ where: { email } })
 
@@ -62,30 +62,36 @@ module.exports = class SessionValidator {
     async forgot(req, res, next) {
         const { email } = req.body
 
-        const teacher =  await Teacher.findOne({ where: { email } })
-        if(!teacher) return res.status(404).json({ error: "Professor não cadastrado" })
+        if (req.session.teacherId) return res.json({ error: "Você está logado, saia da conta para realizar o pedido" })
+
+        const teacher = await Teacher.findOne({ where: { email } })
+        if (!teacher) return res.status(404).json({ error: "Professor não cadastrado" })
 
         req.teacher = teacher
 
         next()
     }
 
-    async reset(req, res, next){
+    async reset(req, res, next) {
         const { email, password, passwordRepeat } = req.body
         const { token } = req.query
-        
-        const teacher =  await Teacher.findOne({ where: { email } })
-        
-        if(!teacher) return res.status(404).json({ error: "Professor não cadastrado", token })
 
-        if(password !== passwordRepeat) return res.status(404).json({ error: "A senha e a repetição da senha não iguais", token })
+        const fillAllFields = checksIfTheChefsFieldsAreEmpty(req.body, res)
+        if (fillAllFields) return fillAllFields
+        
+        const teacher = await Teacher.findOne({ where: { reset_token: token } })
+        if(teacher.email != email) return res.status(404).json({ error: "O email para criar uma nova senha está incorreto", token })
 
-        if(token !== teacher.reset_token) return res.status(404).json({ error: "Token inválido! Solicte uma nova recuperação de senha", token })
+        if (!teacher) return res.status(404).json({ error: "Professor não cadastrado", token })
+
+        if (password !== passwordRepeat) return res.status(404).json({ error: "A senha e a repetição da senha não iguais", token })
+
+        if (token !== teacher.reset_token) return res.status(404).json({ error: "Token inválido! Solicte uma nova recuperação de senha", token })
 
         let now = new Date
         now = now.setHours(now.getHours())
 
-        if(now > teacher.reset_token_expires) return res.status(404).json({ error: "Token expirado! Solicte uma nova recuperação de senha ", token })
+        if (now > teacher.reset_token_expires) return res.status(404).json({ error: "Token expirado! Solicte uma nova recuperação de senha ", token })
 
         req.teacher = teacher
 

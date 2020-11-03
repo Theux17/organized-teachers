@@ -35,7 +35,7 @@ module.exports = class TeacherValidador {
 
             const teacher = await Teacher.findOne({ where: { id: req.params.id } })
 
-            if (!teacher) return res.status(204).json({
+            if (!teacher) return res.status(404).json({
                 error: "Professor não encontrado"
             })
 

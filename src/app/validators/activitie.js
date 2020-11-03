@@ -43,7 +43,10 @@ module.exports = class TeacherValidador {
             } = req.body
 
             teacher_id = req.session.teacherId
-
+            
+            const activitie = await Activitie.findOne({ where: { id: req.params.id } })
+            if(activitie.teacher_id != teacher_id) return res.status(401).json({ error: "Acesso negado" })
+            
             let registeredStudent = {}
             const registeredStudents = await Student.findAll({ where: { teacher_id } })
             const getTeacherStudent = student => registeredStudents.find(teacherStudent => {
@@ -52,6 +55,7 @@ module.exports = class TeacherValidador {
                     return registeredStudent
                 }
             })
+
 
             for (student of students) {
                 getTeacherStudent(student)
@@ -95,8 +99,6 @@ module.exports = class TeacherValidador {
             next()
 
         } catch (error) {
-            console.log(error);
-
             return res.status(400).json({
                 error: "Erro inesperado aconteceu"
             })
@@ -124,10 +126,10 @@ module.exports = class TeacherValidador {
             
             if (filter || page || limit) {
                 activities = await Activitie.paginate(params, 'activitie_name', teacher_id)
-                if(activities.length == 0) return res.status(400).json({ error: "Sem dados para mostrar" })
                 activities = activities.filter(activitie => {
                     if (activitie.teacher_id == teacher_id) return activitie
-                })                
+                })       
+                if(activities.length == 0) return res.status(400).json({ error: "Nenhum resultado foi encontrado" })
             }
 
             req.activities = activities
