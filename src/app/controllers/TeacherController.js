@@ -75,7 +75,7 @@ module.exports = class TeacherController {
             req.session.destroy()
 
             return res.status(200).json({ 
-                message: `Usuário de id ${req.params.id} deletado com sucesso`
+                message: `Professor de id ${req.params.id} deletado com sucesso`
              })
 
         } catch (error) {

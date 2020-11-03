@@ -95,7 +95,7 @@ module.exports = class ActivitiesController {
             await Activitie.delete(req.params.id)
 
             return res.status(200).json({
-                message: `Usuário de id ${req.params.id} deletado com sucesso`
+                message: `Atividade de id ${req.params.id} deletado com sucesso`
             })
 
         } catch (error) {
