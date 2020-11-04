@@ -28,7 +28,7 @@ module.exports = class TeacherValidador {
                 return teacher.id != req.session.teacherId
             })
 
-            if (registeredTeachers.id != req.session.teacherId && registeredTeachers.email == email)
+            if (registeredTeachers && registeredTeachers.id != req.session.teacherId && registeredTeachers.email == email)
                 return res.status(401).json({
                     message: "Email já cadastrado"
                 })

@@ -45,7 +45,7 @@ module.exports = class TeacherValidador {
             teacher_id = req.session.teacherId
             
             const activitie = await Activitie.findOne({ where: { id: req.params.id } })
-            if(activitie.teacher_id != teacher_id) return res.status(401).json({ error: "Acesso negado" })
+            if(activitie && activitie.teacher_id != teacher_id) return res.status(401).json({ error: "Acesso negado" })
             
             let registeredStudent = {}
             const registeredStudents = await Student.findAll({ where: { teacher_id } })
