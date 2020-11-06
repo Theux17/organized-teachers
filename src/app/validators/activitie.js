@@ -1,4 +1,4 @@
-const Student = require('../models/Student')
+ const Student = require('../models/Student')
 const Activitie = require('../models/Activitie')
 
 function checksIfFieldsIsEmpty(body, res) {
@@ -45,6 +45,9 @@ module.exports = class TeacherValidador {
             teacher_id = req.session.teacherId
             
             const activitie = await Activitie.findOne({ where: { id: req.params.id } })
+            
+            if(!activitie) return res.status(404).json({ error: "A atividade não existe" })
+        
             if(activitie && activitie.teacher_id != teacher_id) return res.status(401).json({ error: "Acesso negado" })
             
             let registeredStudent = {}
