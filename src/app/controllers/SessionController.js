@@ -6,16 +6,22 @@ const mailer = require('../lib/mailer')
 
 module.exports = class SessionController {
     async login(req, res) {
-        req.session.teacherId = req.teacher.id
-        const teacherId = req.session.teacherId
+        try {
+            req.session.teacherId = req.teacher.id
+            const teacherId = req.session.teacherId
 
-        return res.status(200).redirect(`/teachers/profile/${teacherId}`)
+            return res.status(200).redirect(`/teachers/profile/${teacherId}`)
+        } catch (error) {
+            return res.status(400).json({
+                error: "Erro inesperado ao realizar login"
+            })
+        }
     }
 
-    async logout(req, res) {
+    logout(req, res) {
         req.session.destroy()
         return res.status(200).json({
-            message: "Que pena que você já vai, até a próxima!"
+            message: "Logout realizado com sucesso."
         })
     }
 
@@ -62,7 +68,7 @@ module.exports = class SessionController {
 
     async reset(req, res) {
         const { teacher, token } = req
-        
+
         try {
             const { password } = req.body
 
@@ -79,7 +85,6 @@ module.exports = class SessionController {
             })
 
         } catch (error) {
-            console.error(error)
             return res.status(400).json({
                 error: "Erro inesperado ao cadastrar uma nova senha",
                 token

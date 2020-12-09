@@ -29,7 +29,7 @@ module.exports = class TeacherController {
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado ao criar o professor"
+                error: "Erro inesperado ao cadastrar o professor"
             })
         }
     }
@@ -43,7 +43,7 @@ module.exports = class TeacherController {
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado ao mostrar o professor"
+                error: "Erro inesperado ao mostrar os dados do professor"
             })
         }
     }
@@ -63,7 +63,7 @@ module.exports = class TeacherController {
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado ao atualizar o professor"
+                error: "Erro inesperado ao atualizar os dados do professor"
             })
         }
     }

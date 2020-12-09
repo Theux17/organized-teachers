@@ -35,7 +35,7 @@ module.exports = class StudentsController {
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado ao criar o estudante"
+                error: "Erro inesperado ao cadastrar estudante"
             })
         }
     }
@@ -48,7 +48,7 @@ module.exports = class StudentsController {
 
         } catch (error) {
             return res.status(400).json({
-                error: "Erro inesperado ao mostrar o estudante"
+                error: "Erro inesperado ao mostrar estudante"
             })
         }
     }

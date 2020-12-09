@@ -7,7 +7,6 @@ module.exports = class ActivitiesController {
 
             return res.status(200).json(activities)
         } catch (error) {
-            console.error(error)
             return res.status(400).json({
                 error: "Erro inesperado ao listar todas as atividades"
             })
