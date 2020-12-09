@@ -10,6 +10,52 @@
 - PostgreSQL
 
 ---
+## Rotas 
+
+### Login / Logout
+
+ROTA                  |  HTTP(Verbo)      |         Descrição                | 
+--------------------  | ----------------- |    ---------------------         | 
+/teachers/login       |      POST         |   Realiza login do professor     | 
+/teachers/logout      |      POST         |   Realiza o logout do professor  | 
+
+### Forgot / Reset-password
+
+ROTA                 |     HTTP(Verbo)   |      Descrição         |                                      
+-------------------- | ----------------- | --------------------- | 
+/teachers/forgot-password |       POST          |   Envia um email para o professor recuperar a senha   | 
+/teachers/reset-password        |       POST                 |   O profesosr cadastra uma nova senha   | 
+
+### Teachers
+
+ROTA                   |     HTTP(Verbo)   |       Descrição       | 
+ --------------------  | ----------------- | --------------------- |
+/teachers              |       POST         |  O professor faz o cadastro    | 
+/teachers/profile/:id  |   GET        |         O  professor visualiza o seu perfil    |  
+/teachers/:id          |       PUT         |  O professor atualiza os seus dados | 
+/teachers/:id             |       DELETE      |   O professor exclui a sua conta |
+
+### Students
+
+ROTA                   |     HTTP(Verbo)   |       Descrição       | 
+ --------------------  | ----------------- | --------------------- |
+/teachers/students     |       GET         |  O professor visualiza os estudantes cadastrados    | 
+/teachers/students    | POST        |     O professor cadastra novos alunos  |  
+/teachers/students/:id  |       GET    |  O professor visualiza um estudante específico | 
+/teachers/students/:id  |  PUT    |  O professor atualiza um estudante específico |
+/teachers/students/:id  |  DELETE    |  O professor exclui um estudante específico
+
+### Activities
+
+ROTA                   |     HTTP(Verbo)   |       Descrição       | 
+ --------------------  | ----------------- | --------------------- |
+/teachers/activities   |       GET         | O professor visualiza todas atividades | 
+/teachers/activities    | POST        |     O professor cadastra uma nova atividade  |  
+/teachers/activities/:id  |       GET    |  O professor visualiza uma atividade específica | 
+/teachers/activities/:id  |  PUT    |  O professor atualiza uma atividade específica |
+/teachers/activities/:id  |  DELETE    |  O professor exclui uma atividade específica
+
+---
 ## Para executar o projeto 
 
 <p align="center"><strong> Antes você precisar instalar o 
